@@ -2,6 +2,20 @@
 
 Aplikasi API sederhana menggunakan framework [Gin](https://github.com/gin-gonic/gin) dan [GORM](https://gorm.io/) untuk mengelola data todo. Aplikasi ini terhubung ke database PostgreSQL.
 
+
+Berikut keterangan singkat cara kerja kode tersebut:
+
+1. **`main.go`** - Tit utama program. Mengambil `database.Connect()` (lihat bawah) untuk koneksi DB, melakukan `AutoMigrate` agar tabel `todos` dibuat otomatis, lalu setup router Gin (`router.SetupRouter`) dan menjalankan server di `localhost:8080`.
+
+2. **`database/database.go`** - Fungsi `Connect()` membaca konfigurasi dari file `.env` (melalui `godotenv.Load`), lalu menjalankan GORM Open dengan DSN dari variabel `DATABASE_URL`, dan melakukan `PingContext` selama 15 detik untuk memastikan koneksi aktif sebelum dikembalikan.
+
+3. **`router/router.go`** - Membuat group route `/api/v1` dan menambahkan route todo (melalui `todo.RegisterRoutes`).
+
+4. **`todo/model.go`** - Mendefinisikan struct `Todo` (id, title, is_done), serta request structs untuk create/update.
+
+Untuk menjalankan aplikasi, pastikan `DATABASE_URL` didefinisikan di `.env`, lalu `go run main.go`.
+
+
 ## Features
 
 - Feature 1

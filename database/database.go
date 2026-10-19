@@ -27,8 +27,8 @@ func Connect() (*gorm.DB, error) {
   }
 
   db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-Logger:               logger.Default.LogMode(logger.Info), 
-DisableAutomaticPing: true, // ping dilakukan manual di bawah, dengan batas waktu     
+		Logger:               logger.Default.LogMode(logger.Info), 
+		DisableAutomaticPing: true, // ping dilakukan manual di bawah, dengan batas waktu     
 	}) 
   if err != nil {
     return nil, err
