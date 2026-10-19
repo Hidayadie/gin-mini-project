@@ -1,18 +1,22 @@
 package database
 
-
 import (
 	"context"
-	"database/sql"
+	//"database/sql"
 	"errors"
 	"log"
 	"os"
 	"time"
-	"github.com/joho/godotenv"
+
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/joho/godotenv"
+	"gorm.io/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm/logger"
 )
 
-func Connect() (*sql.DB, error) {
+
+func Connect() (*gorm.DB, error) {
   if err := godotenv.Load(); err != nil {
     log.Fatal("Error loading .env file")
   }
@@ -22,19 +26,25 @@ func Connect() (*sql.DB, error) {
     return nil, errors.New("environment variable DATABASE_URL belum diatur")
   }
 
-  var err error
-  db, err := sql.Open("pgx", dsn)
+  db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+Logger:               logger.Default.LogMode(logger.Info), 
+DisableAutomaticPing: true, // ping dilakukan manual di bawah, dengan batas waktu     
+	}) 
   if err != nil {
     return nil, err
   }
 
-  ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-  defer cancel()
+// Ping untuk memastikan database benar-benar bisa dihubungi
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}     
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	if err := sqlDB.PingContext(ctx); err != nil {
+		sqlDB.Close()         
+		return nil, err     
+	}     
+	return db, nil 
 
-  if err := db.PingContext(ctx); err != nil {
-    db.Close()
-    return nil, err
-  }
-
-  return db, nil
-}
+ }

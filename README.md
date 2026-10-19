@@ -1,6 +1,6 @@
-# Project Name
+# Latihan Gin - Todo API
 
-A brief description of your Go project.
+Aplikasi API sederhana menggunakan framework [Gin](https://github.com/gin-gonic/gin) dan [GORM](https://gorm.io/) untuk mengelola data todo. Aplikasi ini terhubung ke database PostgreSQL.
 
 ## Features
 

@@ -1,20 +1,21 @@
 package router
 
 import (
-  "database/sql"
+	"gorm.io/gorm"
 
-  "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 
-  "latihanGin/todo"
+	"latihanGin/todo"
 )
 
 // SetupRouter membuat router Gin lengkap dengan semua route.
 // Dipakai oleh main.go dan oleh test.
-func SetupRouter(db *sql.DB) *gin.Engine {
-  r := gin.Default()
+func SetupRouter(db *gorm.DB) *gin.Engine {
+	r := gin.Default()
 
-  v1 := r.Group("/api/v1")
-  todo.RegisterRoutes(v1, &todo.Handler{DB: db})
+	v1 := r.Group("/api/v1")
+	todo.RegisterRoutes(v1, &todo.Handler{DB: db})
 
-  return r
+	return r
 }
+
